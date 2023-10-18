@@ -8,10 +8,12 @@ import com.uadb.advancedev.entities.Rate;
 
 import com.uadb.advancedev.repositories.RateRepository;
 import com.uadb.advancedev.services.RateService;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
+@Service
 public class RateServiceImpl implements RateService {
     private final RateRepository rateRepository;
 

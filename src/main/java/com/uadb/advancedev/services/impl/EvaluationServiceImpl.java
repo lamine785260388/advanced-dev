@@ -7,10 +7,11 @@ import com.uadb.advancedev.entities.Professor;
 import com.uadb.advancedev.entities.Student;
 import com.uadb.advancedev.repositories.EvaluationRepository;
 import com.uadb.advancedev.services.EvaluationService;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-
+@Service
 public class EvaluationServiceImpl implements EvaluationService {
     private final EvaluationRepository evaluationRepository;
 

@@ -6,10 +6,11 @@ import com.uadb.advancedev.entities.Course;
 import com.uadb.advancedev.entities.Evaluation;
 import com.uadb.advancedev.repositories.CourseRepository;
 import com.uadb.advancedev.services.CourseService;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-
+@Service
 public class CourseServiceImpl implements CourseService {
     private  final CourseRepository courseRepository;
 

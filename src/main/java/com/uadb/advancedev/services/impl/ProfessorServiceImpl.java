@@ -6,10 +6,12 @@ import com.uadb.advancedev.entities.Professor;
 
 import com.uadb.advancedev.repositories.ProfessorRepository;
 import com.uadb.advancedev.services.ProfessorService;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
+@Service
 public class ProfessorServiceImpl implements ProfessorService {
     private final ProfessorRepository professorRepository;
 
