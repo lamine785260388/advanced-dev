@@ -15,5 +15,5 @@ public interface RateService {
 
     List<RateDTO> getAllRates();
 
-    Optional<RateDTO> getRatesById(long idRate);
+    Optional<RateDTO> getRateById(long idRate);
 }

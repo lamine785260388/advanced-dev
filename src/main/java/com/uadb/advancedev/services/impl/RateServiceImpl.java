@@ -43,7 +43,7 @@ public class RateServiceImpl implements RateService {
     }
 
     @Override
-    public Optional<RateDTO> getRatesById(long idRate) {
+    public Optional<RateDTO> getRateById(long idRate) {
         Optional<Rate> rateOpt = rateRepository.findById(idRate);
 
         if(rateOpt.isPresent()) {
