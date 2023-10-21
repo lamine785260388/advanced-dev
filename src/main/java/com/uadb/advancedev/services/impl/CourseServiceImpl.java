@@ -1,62 +1,42 @@
 package com.uadb.advancedev.services.impl;
 
 import com.uadb.advancedev.dto.CourseDTO;
-import com.uadb.advancedev.dto.EvaluationDTO;
 import com.uadb.advancedev.entities.Course;
-import com.uadb.advancedev.entities.Evaluation;
+import com.uadb.advancedev.mappers.CourseMapper;
 import com.uadb.advancedev.repositories.CourseRepository;
 import com.uadb.advancedev.services.CourseService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
+
 @Service
 public class CourseServiceImpl implements CourseService {
-    private  final CourseRepository courseRepository;
 
-    public CourseServiceImpl(CourseRepository courseRepository) {
+    private final CourseRepository courseRepository;
+    private final CourseMapper courseMapper;
+
+    public CourseServiceImpl(CourseRepository courseRepository, CourseMapper courseMapper) {
         this.courseRepository = courseRepository;
+        this.courseMapper = courseMapper;
     }
 
     @Override
     public void save(CourseDTO courseDTO) {
 
-        Course course = new Course();
+        courseRepository.save(courseMapper.toEntity(courseDTO));
+    }
 
-        course.setName(courseDTO.getName());
+    @Override
+    public CourseDTO getCourseById(long courseId) {
 
-        courseRepository.save(course);
-
+        Course course = courseRepository.findById(courseId)
+                .orElseThrow(() -> new EntityNotFoundException("Course with id " + courseId + " not found"));
+        return courseMapper.toDto(course);
     }
 
     @Override
     public List<CourseDTO> getAllCourses() {
-
-        return courseRepository.findAll().stream().map(course -> {
-
-            CourseDTO courseDTO = new CourseDTO();
-            courseDTO.setName(course.getName());
-            courseDTO.setId(course.getId());
-
-            return courseDTO;
-        }).toList();
-    }
-
-    @Override
-    public Optional<CourseDTO> getCourseById(long idCourse) {
-
-        Optional<Course> courseOpt = courseRepository.findById(idCourse);
-
-        if(courseOpt.isPresent()) {
-            Course course = courseOpt.get();
-            CourseDTO courseDTO = new CourseDTO();
-
-            courseDTO.setId(course.getId());
-            courseDTO.setName(course.getName());
-
-            return Optional.of(courseDTO);
-        }
-
-        return Optional.empty();
+        return courseMapper.toDto(courseRepository.findAllWithStudents());
     }
 }

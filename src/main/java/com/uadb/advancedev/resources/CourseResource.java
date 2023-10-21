@@ -1,33 +1,34 @@
 package com.uadb.advancedev.resources;
 
-import java.util.List;
-import java.util.Optional;
-
+import com.uadb.advancedev.dto.CourseDTO;
+import com.uadb.advancedev.services.CourseService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.uadb.advancedev.dto.CourseDTO;
-import com.uadb.advancedev.services.CourseService;
+import java.util.List;
 
 @RestController
 public class CourseResource {
 
     private final CourseService courseService;
 
+
     public CourseResource(CourseService courseService) {
         this.courseService = courseService;
     }
 
+
     @PostMapping("/courses")
-    public ResponseEntity<Void> save(@RequestBody CourseDTO courseDTO) {
+    public ResponseEntity<Void> save(@Valid @RequestBody CourseDTO courseDTO) {
 
         courseService.save(courseDTO);
 
         return ResponseEntity.status(201).build();
     }
 
-     @GetMapping("/courses")
-    public ResponseEntity<List<CourseDTO>> getCourses() {
+    @GetMapping("/courses")
+    public ResponseEntity<List<CourseDTO>> getStudents() {
 
         return ResponseEntity.ok(courseService.getAllCourses());
     }
@@ -36,7 +37,7 @@ public class CourseResource {
     public ResponseEntity<CourseDTO> getCourseById(@PathVariable long courseId) {
 
 
-        Optional<CourseDTO> courseByIdOpt = courseService.getCourseById(courseId);
-        return courseByIdOpt.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+        CourseDTO courseDTO = courseService.getCourseById(courseId);
+        return ResponseEntity.ok(courseDTO);
     }
 }

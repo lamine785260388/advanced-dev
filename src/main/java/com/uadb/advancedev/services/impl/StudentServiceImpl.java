@@ -5,16 +5,21 @@ import com.uadb.advancedev.entities.Student;
 import com.uadb.advancedev.mappers.StudentMapper;
 import com.uadb.advancedev.repositories.StudentRepository;
 import com.uadb.advancedev.services.StudentService;
+import jakarta.persistence.EntityNotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class StudentServiceImpl implements StudentService {
 
+    private final Logger log = LoggerFactory.getLogger(StudentServiceImpl.class);
+
     private final StudentRepository studentRepository;
     private final StudentMapper studentMapper;
+
     public StudentServiceImpl(StudentRepository studentRepository, StudentMapper studentMapper) {
         this.studentRepository = studentRepository;
         this.studentMapper = studentMapper;
@@ -24,39 +29,39 @@ public class StudentServiceImpl implements StudentService {
     public void save(StudentDTO studentDTO) {
 
         Student student = studentMapper.toEntity(studentDTO);
-
-
-
         studentRepository.save(student);
     }
 
     @Override
     public List<StudentDTO> getAllStudents() {
+        log.info("Get all students service");
 
-        return studentRepository.findAll().stream().map(student -> {
-
-            StudentDTO studentDTO = new StudentDTO();
-            studentDTO.setName(student.getName());
-            studentDTO.setId(student.getId());
-
-            return studentDTO;
-        }).toList();
+        List<Student> studentList = studentRepository.findAll();
+        return studentMapper.toDto(studentList);
     }
 
     @Override
-    public Optional<StudentDTO> getStudentById(long idStudent) {
-        Optional<Student> studentOpt = studentRepository.findById(idStudent);
+    public StudentDTO getStudentById(long idStudent) {
+        log.info("Get student by id");
+        Student student = studentRepository.findById(idStudent)
+                .orElseThrow(() -> new EntityNotFoundException("Student with id " + idStudent + " not found"));
 
-        if(studentOpt.isPresent()) {
-            Student student = studentOpt.get();
-            StudentDTO studentDTO = new StudentDTO();
 
-            studentDTO.setId(student.getId());
-            studentDTO.setName(student.getName());
+        return studentMapper.toDto(student);
 
-            return Optional.of(studentDTO);
-        }
-
-        return Optional.empty();
     }
+
+    @Override
+    public List<StudentDTO> searchStudent(String name) {
+        List<Student> students = studentRepository.findByName(name);
+        return studentMapper.toDto(students);
+    }
+
+    @Override
+    public void update(StudentDTO studentDTO) {
+
+        Student student = studentMapper.toEntity(studentDTO);
+        studentRepository.save(student);
+    }
+
 }
